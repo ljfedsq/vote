@@ -1,8 +1,9 @@
 {
-  "name": "node_vote",
+  "name": "vote",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,7 +17,7 @@
     "commander": "^2.9.0",
     "iconv-lite": "^0.4.24",
     "inquirer": "^4.0.1",
-    "request": "^2.83.0",
+    "request": "^2.88.0",
     "scanf": "^0.7.3"
   }
 }
