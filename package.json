@@ -9,15 +9,14 @@
   "author": "mzhan",
   "license": "ISC",
   "devDependencies": {
-    "nodemailer": "*",
     "node-schedule": "*"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.9.0",
+    "iconv-lite": "^0.4.24",
     "inquirer": "^4.0.1",
     "request": "^2.83.0",
-    "scanf": "^0.7.3",
-    "webpage": "^0.3.0"
+    "scanf": "^0.7.3"
   }
 }
