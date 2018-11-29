@@ -5,7 +5,14 @@ const iconv =  require('iconv-lite')
 const schedule = require('node-schedule');
 
 const rule = new schedule.RecurrenceRule();
-rule.second = [0,5,10,15,20,25,30,35,40,45,50,55];//隔5秒
+//rule.second = [0,5,10,15,20,25,30,35,40,45,50,55];//隔5秒
+let i = 0
+let arr = []
+while(i<60){
+    i = i + 2
+    arr.push(i)
+}
+rule.second = arr//隔2秒
 // rule.hour =0;rule.minute =0;rule.second =0;//每天0点执行
 //rule.minute = [0,20,40];//每小时的0分钟，20分钟，40分钟执行
 
