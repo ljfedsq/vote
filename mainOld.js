@@ -10,22 +10,18 @@ rule.second = [0,5,10,15,20,25,30,35,40,45,50,55];//隔5秒
 //rule.minute = [0,20,40];//每小时的0分钟，20分钟，40分钟执行
 
 const api = "http://www.51lecture.com/app/vote2018.php"; // 初始投票登录页面url
-const url = "http://www.51lecture.com/util/postVote2018.php "; // 投票接口url
-const checkUrl = "http://www.51lecture.com/util/postVoteFile.php" //获取Content
+const url = "http://www.51lecture.com/util/fileUtil.php "; // 投票接口url
 const uri = "http://www.51lecture.com/util/postVote.php"; //  投票、排名接口url
 
 // const agent = "Mozilla/5.0 (Linux; Android 8.1; PBEM00 Build/OPM1.171019.026; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/6.2 TBS/044307 Mobile Safari/537.36 MicroMessenger/6.7.3.1360(0x26070333) NetType/WIFI Language/zh_CN Process/tools"
-//const agent = "Mozilla/5.0 (Linux; Android 8.1; INE-TL00 Build/HUAWEIINE-TL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/6.2 TBS/044307 Mobile Safari/537.36 MMWEBID/4422 MicroMessenger/6.7.3.1360(0x2607033A) NetType/WIFI Language/zh_CN Process/tools"
-const agent ="Mozilla/5.0 (Linux; Android 8.1; INE-TL00 Build/HUAWEIINE-TL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/6.2 TBS/044403 Mobile Safari/537.36 MMWEBID/4422 MicroMessenger/6.7.3.1360(0x2607033A) NetType/WIFI Language/zh_CN Process/tools"
+const agent = "Mozilla/5.0 (Linux; Android 8.1; INE-TL00 Build/HUAWEIINE-TL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/6.2 TBS/044307 Mobile Safari/537.36 MMWEBID/4422 MicroMessenger/6.7.3.1360(0x2607033A) NetType/WIFI Language/zh_CN Process/tools"
+
 let count = 0
-let cookie = 'PHPSESSID=qvaa22vug4ovgo8e0m3bq5ai11' // 需要更新
-//let cookie = ''
+let cookie = 'PHPSESSID=m8phpli76h1dc28j68sgsfuo21' // 需要更新
 let token = ''
 let key = ''
 let userId = ''
 let pid = ''
-let rnd1 = ''
-let voteDay = ''
 
 function parseHtml(result) { 
     let $ = cheerio.load(iconv.decode(result, 'utf-8'),{decodeEntities: false});
@@ -36,45 +32,12 @@ function parseHtml(result) {
         key = pageHtml.match(/var key = "\w+"/ig)[0].split('"')[1]
         userId = pageHtml.match(/var userId = "\w+"/ig)[0].split('"')[1].substr(0,6)
         pid = pageHtml.match(/var pid = "\w+"/ig)[0].split('"')[1]
-        rnd1 = pageHtml.match(/var rnd1 = "\w+"/ig)[0].split('"')[1]
-        // console.info('rnd1:' + rnd1+ ',voteDay:'+ voteDay)
-        check()
+        //console.info('pid:' + pid+ ',key:'+ key)
+        second()
     } else {
         console.log('服务器出错')
     }
     
-}
-function login(res) {
-    let loginUrl = res.match(/ '\.\.(.*)'/)[1]
-    let urlStr = "http://www.51lecture.com" + loginUrl
-   
-    console.log(loginUrl)
-    const options = { // 无cookie情况
-        headers: {
-            "Cookie": cookie,
-            "User-Agent": agent,
-        }
-    };
-    request.get(urlStr,options,(error, response, body) => {
-        console.log(response.statusCode)
-       //console.log(body+'')
-       realLogin()
-    })
-}
-
-function realLogin() {
-    let options = {
-        encoding: null ,
-        headers: {
-            'User-Agent': agent,
-            "Cache-Control": "no-cache",
-            "Cookie": cookie //  更新cookie
-        }
-    }
-    request.get(api,options,(error, response, body) => {
-        parseHtml(body)
-        //console.log(body+'')
-    })
 }
 
 function first() { // 登录获取token
@@ -85,69 +48,69 @@ function first() { // 登录获取token
         }
     };
     request.get(api,options_empty,(error, response, body) => {
-         cookie = response.headers["set-cookie"][0].split(';')[0]
-         login(body+'')
-         return
+         //cookie = response.headers["set-cookie"][0].split(';')[0]
+        let options = {
+            encoding: null ,
+            headers: {
+                'User-Agent': agent,
+                "Cache-Control": "no-cache",
+                "Cookie": cookie //  更新cookie
+            }
+        }
+        request.get(api,options,(error, response, body) => {
+            parseHtml(body)
+        })
     })
 }
-function second(res) { // 投票
+function second() { // 投票
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         "Cookie": cookie,
         "User-Agent": agent,
         "X-Requested-With":"XMLHttpRequest"
     } 
-    let content = {
-        voteDay: res.voteDay,
-        votetime: Math.round((new Date()).getTime()/1000),
-        daycount: res.daycount + 1
-    }
     const options = {
         form: {
             token: token,
             key: key,
-            cmd: 'adduservote', 
-            code: rnd1,
-            session: '20181129', 
+            cmd: 'addvote',  
             uid: userId,
             pid: pid,
-            ids:'MjAy',
-            content: content
-            // ids: '202'
+            ids: '202'
         },
         headers: headers   
     }
-    request.post(url,options,(error, response, body) => {
-        // console.log(body)
+    request.post(uri,options,(error, response, body) => {
         if(body == '1') {
-            // check(headers)
-            console.log('第'+ count + '次投票成功！')
-            third()
+            check(headers)
         }
     })
 }
 
-function check() {
+function check(headers) {
+    let myDate = new Date()
+    let content = {
+        voteday: myDate.toLocaleDateString(),
+        votetime: Math.floor(myDate.valueOf()/1000),
+        daycount: 1
+    }
+    let contentStr = encodeURI(JSON.stringify(content))
     const options = {      
         form: {
-            cmd: 'get',
+            cmd: 'put',
             token: token,
             key: key,
             path: pid,
-            filePath: userId + '.js'
+            filePath: userId + '.js',
+            content: contentStr
         },
-        headers: {
-            'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
-            'Cookie':cookie,
-            'User-Agent': agent,
-            'X-Requested-With':'XMLHttpRequest'
-        }      
+        headers: headers   
     }
-    request.post(checkUrl,options,(error, response, body) => {
-        if(body){
-            second(body)
+    request.post(url,options,(error, response, body) => {
+        if(body == '1') {
+            console.log('第'+ count + '次投票成功！')
+            third()
         }
-        // console.log(body)
     })  
 
 }
@@ -182,11 +145,11 @@ function third() { // 获取排名信息
 }
 
 function start() {
-    //realLogin()
+    //first()
     schedule.scheduleJob(rule, function(){
         console.log('现在时间：',new Date())
         count++
-        realLogin()
+        first()
     });
 }
 

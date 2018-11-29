@@ -1,0 +1,655 @@
+<!DOCTYPE html><html><head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+   <meta name="viewport"  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+   <title></title>
+   <script src="//cloudres.viplecture.com/js/jquery-1.9.1.min.js"></script>
+    <script src="//cloudres.viplecture.com/js/window.js"></script>
+    <script src="//cloudres.viplecture.com/js/classUtil.js"></script>
+    <script src="//cloudres.viplecture.com/js/jquery.scrollLoading.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <link href="//cloudres.viplecture.com/css/font/css/font-awesome.min.css" rel="stylesheet">
+   <style>
+   body{font-family: "microsoft yahei","arial, helvetica, sans-serif"; margin: 0px;text-align: left;}
+   img.banner{width: 100%;height: 100%;}
+   img.circle32{width:32px;height:32px;border-radius: 16px;margin:5px}
+   img.poll{max-width: 100%;max-height: 150px;margin-top:10px;object-fit: cover;}
+   div.action{display:flex;justify-content:space-around;color:gray;font-size: 16px;}
+   table.poll{border-spacing: 0px;font-size: 12px;background-color: white;}
+   td.data{padding: 5px;}
+   td.action{color:gray;border-top:0px dashed #ddd;padding:2px;border-bottom: 1px solid #ddd;}
+   tr.pollheader td{height:25px;border-bottom:1px solid #ddd;padding:5px;}
+   tr.poll td{font-size: 12px;padding:5px 0px;}
+   span.play{position:absolute;top:50%;left:50%;text-align:center;border-radius:24px;width:48px;height:48px;margin-left:-24px;margin-top:-24px;background-color:white;color:#505050}
+   span.uid{display:inline-block;padding:5px 0px;font-size:16px;color:white;background-color:darkorange;margin-right:5px;text-align:center;width:30px;}
+   span.fullName{display:inline-block;padding-top:5px;font-size:18px;font-weight:bold;color:#0176BC}
+   span.ranknumber{display: inline-block;width:24px;padding-top:4px;height:20px;font-size:12px;border-radius:12px;background-color: #30BF82;color:white;}
+   span.number{display:inline-block;padding:5px;font-size: 12px;margin-top:5px}
+   span.name{display:block;height:35px;color:#353535;font-size: 0.8em}
+   span.desc{font-size: 12px;color: gray;}
+   span.spButton{cursor:pointer;display:inline-block;margin:3px;padding:5px 5px;text-align:center;font-size:14px;background-color: #0176bc;color:white;border-radius: 2px;}	
+   input::-webkit-input-placeholder{
+     color:#999999;font-size: 12px;
+   }
+   div.sponsor{display:block;width:94%;padding: 5px 2% 20px 2%;text-align: center;border-top: 1px solid #FFFFFF;}
+   div.sponsor img{max-width: 100%;}
+   @media screen and (min-width: 800px){
+   body{background-color:#FEFEFE}
+   #divContainer{border:1px solid #ddd;box-shadow:inset 0 0 20px rgba(0,0,0,.2);width:50%;margin-left:25%;background-color:#FFFFFF}    
+   span.name{display:block;height:35px;color:#353535;font-size: 1.2em}
+   span.number{display:inline-block;padding:5px;font-size: 1.2em;margin-top:5px}
+   label.stats{font-size: 1.2em;}
+   tr.poll td{font-size: 1.0em;padding:5px 0px;}
+    video::-internal-media-controls-download-button {
+       display:none;
+       -webkit-appearance:none;
+   }
+   
+   video::-webkit-media-controls-enclosure {
+       overflow:hidden;
+   }
+   
+   video::-webkit-media-controls-panel {	
+       width: calc(100% + 30px); 
+   }
+   }
+   @media screen and (max-width: 800px){
+    video::-internal-media-controls-download-button {
+       display:none;
+   }
+   
+   video::-webkit-media-controls-enclosure {
+       overflow:hidden;
+   }
+   
+   video::-webkit-media-controls-panel {
+       display:none;
+       background: transparent;/*rgba(0,0,0,0.5);*/
+   }
+   }
+   </style>	
+   </head>
+   <body>	 
+   <div id="divContainer" style="display: block;overflow: auto;-webkit-overflow-scrolling: touch;">
+   <div id="divHeader" style="display:block;position: relative;min-height: 100px;">
+       <!--<label id="lblTimer" style="position: absolute;display:block;width:100%;padding:5px 0px;text-align:center;bottom:5px;background:rgba(0,0,0,0.5);color:white;"></label>-->
+   </div>
+   
+   <div id="divStats" style="display:flex;justify-content:space-around;width: 80%;margin:10px 10%;border:0px solid #EFEFF2;border-radius: 3px;padding:5px 0px;">
+         <span style="text-align:center;color:gray;"><span id="spCandidateCount"></span><br>候选人</span>
+          <span style='text-align:center;color:gray;'><span id="spVoteCount"></span><br>投票数</span>  
+          <span id="spViewRank" style='cursor:pointer;text-align:center;color:darkorange;'><span class="fa fa-bar-chart" ></span><br>排行榜</span>   	 	  
+   </div>
+   <!--
+   <div style="position: relative;display:block;width:70%;height:35px;margin:10px 15%;">
+       <i style="position:absolute;top:5px;right:5px;color:#ddd" class="fa fa-search fa-1x"></i>
+       <input id="txtSearch" style="text-align:center;width:100%;height:25px;padding:0px;border-radius:3px;font-size:16px;border:1px solid #EFEFF2;" placeholder="请输入参赛候选人编号或者姓名">
+   </div>
+   -->
+   <div id="divContent" style="display:flex;justify-content:flex-start;flex-wrap:wrap;padding-bottom:30px;text-align:left;width:100%;border-top: 10px solid #EFEFF2;">
+   </div>
+   </div>
+    <div id="divToolBar2" style="z-index:100;position: fixed;bottom:0px;width:100%;height:45px;display:flex;flex-direction: row;border-top:1px solid #ddd;background-color:#FCFCFC;color:white;justify-content:space-around">
+       <span id="spRule" style="cursor:pointer;width:80px;padding:10px 5px 5px 10px;height:20px;margin-top:5px;color:#0095D7" class="mediaBtn fa fa-bars fa-lg"> 规则</span>
+       <span id="spRank" style="cursor:pointer;display:none;width:64px;height:64px;text-align:center;border-radius: 32px;background-color:white;border-bottom:2px solid gray;position:absolute;margin-top:-32px;left:50%;margin-left:-32px;">
+       <i class='fa fa-bar-chart fa-lg' style="display:block;margin:8px;padding-top:8px;padding-left:2px;width:46px;height:40px;border-radius: 24px;background-color:#0095D7;color:white;"><br><span style="font-size: 10px;">排行榜</span></i>
+     </span>
+     <span id="spVote" style="opacity:0.3;cursor:pointer;display:block;width:64px;height:64px;text-align:center;border-radius: 32px;background-color:white;border-bottom:2px solid gray;position:absolute;margin-top:-32px;left:50%;margin-left:-32px;">
+       <i id="vote" class='fa fa-thumbs-o-up fa-lg' style="display:block;margin:8px;padding-top:8px;padding-left:2px;width:46px;height:40px;border-radius: 24px;background-color:#0095D7;color:white;"><br><span style="font-size: 12px;">投票</span></i>
+     </span>
+     <span id="spShare" style="cursor:pointer;width:80px;padding:10px 5px 5px 10px;height:20px;margin-top:5px;color:#0095D7" class="mediaBtn fa fa-share-alt fa-lg"> 分享</span>
+   </div>
+   <script>  
+      var group = "ljzfin";
+      var user = "5859c49b";
+      var userId = "f26ddbec08162930f55de5cf67f8d7b6";
+      userId = userId.substr(0,6);
+      var token = "23023967a1101df20fc8280ad5ddeef4";
+      var key = "1543473856";
+      var rnd1 = "3980";
+      var voteDay = "2018-11-29";
+      var visittime = 1543473856000;
+      var pid = "19";
+      var videoActive = null;
+      var wxShare = null;
+      var posterImage = "";
+      var fn_invite = null;
+      var session = 0;
+      var config = {
+           daycount:10,
+           maxcount:10,
+           interval:1800
+      }
+      if(localStorage.getItem("visittime")>0){
+           lastvisittime = localStorage.getItem("visittime");
+           if(visittime-lastvisittime<2000){
+               classUtil.alert("访问太频繁，请不用刷新");
+               $(document.body).html("<div style='display:block;margin-top:100px;color:gray;text-align:center;'><img style='width:64px;margin-bottom:10px;' src='../images/warn.png'><br>访问太频繁，请不用刷新！</div>");
+           }
+      }
+      localStorage.setItem("visittime",(new Date()).getTime());
+      shareTitle = "2018沪上金融家评选网络投票";
+      shareContent = "2018沪上金融家评选网络投票已经开启，请您来投票！";
+      shareUrl = window.location.href;
+      shareImage = "http://www.51lecture.com/custom/"+group+"/logo.jpg";
+      wx.config({
+                   debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                   appId: 'wx65398f3325d7afc8',
+                   timestamp: 1543473856,
+                   nonceStr: 'u79MZuxzw8TReO5e',
+                   signature: 'f2399e67650abb8a7174e0ec6aa6114430b8968f',               
+                         jsApiList: ['onMenuShareAppMessage',
+                    'onMenuShareTimeline' ] // 必填，需要使用的JS接口列表
+     });
+           var winWidth = $(window).width();//100%
+       var winHeight = window.innerHeight?window.innerHeight:$(window).height();
+         //$("#divToolBar2").css("top",winHeight-$("#divToolBar2").height()-1);	 
+         var jsonParam = {column:1,color:"white",multivote:0,paramImgCount:1,paramVideoCount:0,count:0,open:0,dtStart:"",dtEnd:"",dtStartEnroll:"",dtEndEnroll:""};
+         var rule = "";
+         var sponsor = "";
+         var dtToday = (new Date()).getTime();
+         var dtStart = 0;
+         var dtEnd = 0;
+         var readCount = 0;
+         var voteStatus = 1;
+          $.ajax({
+               type:'get',
+                   url:"//cloudres.viplecture.com/static/config."+pid+".js?r="+Math.random(),          
+                   dataType: "text",
+                   async : false,  
+                   success:function(res){
+                    if(res!=0){
+                           jsonPoll = JSON.parse(res);
+                           jsonParam.column = jsonPoll[0].paramColumn;
+                           jsonParam.color = jsonPoll[0].paramColor;
+                           jsonParam.multivote = jsonPoll[0].paramMultivote;
+                           jsonParam.count = jsonPoll[0].paramCount;
+                           jsonParam.paramImgCount = jsonPoll[0].paramImgCount;
+                           jsonParam.paramVideoCount = jsonPoll[0].paramVideoCount;
+                           jsonParam.open = jsonPoll[0].paramOpen;
+                           document.title = jsonPoll[0].name;
+                           readCount = parseInt(jsonPoll[0].readCount);
+                           rule = htmldecode(jsonPoll[0].rule);
+                           sponsor = jsonPoll[0].sponsor?htmldecode(jsonPoll[0].sponsor):"";
+                           shareTitle = jsonPoll[0].name;
+                       shareContent = jsonPoll[0].description;
+                       shareImage = jsonPoll[0].image;
+                       posterImage = jsonPoll[0].posterImage;
+                           if(posterImage.length>5){
+                           shareUrl = "http://www.51lecture.com/app/share.php?group="+group+"&pid="+pid;          		   
+                         }
+                           imgElm = $("<img class='banner' src='"+jsonPoll[0].image+"'>");
+                           dtElm = $("<span>"+jsonPoll[0].dtEnd+"</span>");
+                           $("#divHeader").append(imgElm);
+                           imgElm.on("error",function(){
+                               $(this).attr("src","images/vote.jpg");
+                           })
+                           //$("#divHeader").append(dtElm);
+                           dtStartEnroll = new Date(jsonPoll[0].dtStartEnroll.replace(/-/g,"/"));
+                           dtEndEnroll = new Date(jsonPoll[0].dtEndEnroll.replace(/-/g,"/"));
+                           dtExpireEnroll = Math.ceil(dtEndEnroll.getTime()/1000); 
+                           dtStart = new Date(jsonPoll[0].dtStart.replace(/-/g,"/"));
+                           dtEnd = new Date(jsonPoll[0].dtEnd.replace(/-/g,"/"));
+                           dtExpire = Math.ceil(dtEnd.getTime()/1000);  
+                           if(dtToday<dtStart){
+                               if(jsonParam.open==1 && dtToday<dtStartEnroll){
+                                 $("#lblTimer").html("活动报名:"+jsonPoll[0].dtStartEnroll+" ~ "+jsonPoll[0].dtEndEnroll);
+                                 //return;
+                             }
+                               $("#lblTimer").html("投票启动时间:"+jsonPoll[0].dtStart);
+                               $("#spVote").css("opacity",0.3);
+                               voteStatus = 0;
+                               classUtil.alert("投票未开始!")
+                               //return;
+                           }
+                           else if(dtToday>dtEnd){
+                                $("#lblTimer").html("投票已结束");
+                                $("#spVote").css("opacity",0.3);
+                                voteStatus = 0;
+                                classUtil.alert("投票已结束!")
+                                //return;
+                           }
+                           else{
+                              startTimer(dtExpire,"lblTimer",function(){  
+                                      $("#spVote").css("opacity",0.3); 	
+                                      voteStatus = 0;
+                                      $("#lblTimer").html("投票已结束");		
+                               })   	
+                            }
+                            
+              
+                       }   	 	
+                       },
+                 fail:function(res){
+                       
+                 }
+       })
+       
+      function htmldecode(s){
+        var div = document.createElement('div');
+        div.innerHTML = s;
+        return div.innerText || div.textContent;
+      }
+       
+      function startTimer(timeStart,lblID,callback)
+      {
+              if(typeof(Worker)!=="undefined")
+              {
+                if(typeof(w)=="undefined" || w==null)
+               {             
+                 w=new Worker("../js/demo_worker.js");               
+               }
+               w.onmessage = function (event) {
+               {
+                   var d = new Date();   	        
+                   var sec = (1000*timeStart-d.getTime())/1000;  
+                   dtLeft = sec>0?"<i class='fa fa-clock-o'></i> 离投票结束还有:"+formatTime(sec):"投票结束";
+                $("#"+lblID).html(dtLeft);  
+                if(sec<=0){
+                    callback && callback();
+                }
+         
+               }
+              };
+            }
+      }
+      
+      function formatTime(longTime,nozero) {
+       //转化为 日+小时+分+秒
+       var time = parseFloat(longTime);
+       if (time != null && time != ""){
+           if (time < 60) {
+               var s = Math.floor(time);
+               time = s + '秒';
+           } else if (time > 60 && time < 3600) {
+               var m = parseInt(time / 60);
+               var s = parseInt(time % 60);
+               time = m + "分钟" + s + "秒";
+               if(nozero==1 && s==0){
+                   time = m + "分钟";
+               }
+           } else if (time >= 3600 && time < 86400) {
+               var h = parseInt(time / 3600);
+               var m = parseInt(time % 3600 / 60);
+               var s = parseInt(time % 3600 % 60 % 60);
+               time = h + "小时" + m + "分钟" + s + "秒";
+               if(nozero==1 && m==0 && s==0){
+                   time = h + "小时";
+               }
+           } else if (time >= 86400) {
+               var d = parseInt(time / 86400);
+               var h = parseInt(time % 86400 / 3600);
+               var m = parseInt(time % 86400 % 3600 / 60)
+               var s = parseInt(time % 86400 % 3600 % 60 % 60);
+               time = d + '天' + h + "小时" + m + "分钟" + s + "秒";
+           }
+       }	
+       return time;	
+   }
+      
+   $(document).ready(function () {  
+        $("#divContainer").css("height",winHeight-$("#divToolBar2").outerHeight(true))
+       
+           $.post("../util/postVote.php",{"token":token,"key":key,"cmd":"viewpoll","pid":pid,"bolPublic":1,"order":"uid"},function(data){
+               if(data==0){
+                    $("#divContent").css({"display":"block","color":"red","text-align":"center","padding-top":"50px"}).html("暂时没有候选人登记投票");
+               }
+               if(data!=0){
+                   jsonPollData = JSON.parse(data);
+                     jsonParam.column = 3;
+                     pollStyle = jsonParam.column==2?"border:1px solid green;width:46%;margin-top:3px;margin-bottom:3px;margin-left:2%;margin-right:1%;":"width:100%";
+                   pollStyle = jsonParam.column==3?"width:31%;margin-top:3px;margin-bottom:3px;margin-left:1%;margin-right:1%;":pollStyle;
+                   votesum = 0;
+                for(i=0;i<jsonPollData.length;i++){
+                     id = jsonPollData[i].ID;
+                      view = parseInt(jsonPollData[i].readCount);
+                      shareCount = parseInt(jsonPollData[i].shareCount);
+                      readCount += view;
+                      uid = jsonPollData[i].uid;
+                      fullName = jsonPollData[i].fullName;
+                      votecount = jsonPollData[i].votecount?jsonPollData[i].votecount:0;
+                      votesum += parseInt(votecount);
+                      name = jsonPollData[i].name;
+                      name = htmldecode(name)
+                      description = jsonPollData[i].description;
+                      image = jsonPollData[i].image;
+                      image1 = "";
+                      image2 = "";
+                      imgStyle= "height:90px;";
+                      videoStyle = "max-width:100%;max-height:250px;margin-top:3px";
+                      if(jsonParam.column==1 && jsonParam.paramImgCount==2){
+                       image1 = jsonPollData[i].image1; 
+                       if(image1.length>5){
+                         imgStyle = "max-width:48%;max-height:180px;float:left;margin-left:1%;";  
+                       }     
+                       videoStyle = "max-width:98%;max-height:250px;margin:5px 1%";	   
+                      }
+                      if(jsonParam.column==1 && jsonParam.paramImgCount==3){
+                       image1 = jsonPollData[i].image1;    
+                       image2 = jsonPollData[i].image2; 
+                       if(image1.length>5 && image2.length>5){
+                         imgStyle = "max-width:32%;max-height:180px;float:left;margin-left:1%;";   	
+                       }  
+                       else if(image1.length>5 || image2.length>5){
+                         imgStyle = "max-width:48%;max-height:180px;float:left;margin-left:1%;";  
+                       }  
+                       videoStyle = "max-width:98%;max-height:250px;margin:5px 1%";	    	 	        	      
+                      }
+                      video = jsonPollData[i].video;
+                      audio = jsonPollData[i].audio;
+                      if(jsonParam.paramVideoCount==1){
+                          videoElm = (video.length>5 && video.toLowerCase().indexOf(".mov")<0 && video.toLowerCase().indexOf(".mp4")<0)?"<iframe  src='"+video+"' style='"+videoStyle+"'></iframe>":"";
+                   videoElm = (video.length>5 && video.toLowerCase().indexOf("player.html?")<0 && video.toLowerCase().indexOf(".html")>0)?"<a target='_blank' href='"+video+"'><div style='position:relative'><span class='play fa fa-play-circle fa-4x'></span><img style='width: 100%;max-height:250px;' src='"+image+"'></div></a>":videoElm;
+                   videoElm = (video.length>5 && (video.toLowerCase().indexOf(".mov")>0||video.toLowerCase().indexOf(".mp4")>0))?"<video id='vid"+i+"'  src='"+video+"' data-idx='"+i+"' class='h5video' poster='"+image+"' controlsList='nodownload' controls='controls' x5-playsinline='true' playsinline='true' webkit-playsinline='true' preload='true' style='object-fit:fill;"+videoStyle+"'></video>":videoElm;
+                       image =  ((jsonParam.paramImgCount==1 && video.length>5) || image.length<5)?"":image;	
+                       image =  ((image1.length==0 && jsonParam.paramImgCount>1 && video.length>5) || image.length<5)?"":image;	
+                      }
+                      else{
+                          videoElm = "";
+                      }
+                  tblData = $("<table class='poll' style='"+pollStyle+"'></table>");
+                  data = "<div style='display:block;height:30px;position:relative'><span class='uid'>"+uid+"</span><span class='fullName'>"+fullName+"</span></div>";
+                      data += "<br><span class='name'> "+name+"</span>";
+                      data = image.length>5?data+"<br><img data-idx='"+i+"' data-url='"+image+"' src='images/dd.gif' class='poll scrollLoading' style='"+imgStyle+"'>":data;
+                      data = image1.length>5?data+"<img data-idx='"+i+"' data-url='"+image1+"' src='images/dd.gif' class='poll scrollLoading' style='"+imgStyle+"'>":data;
+                      data = image2.length>5?data+"<img data-idx='"+i+"' data-url='"+image2+"' src='images/dd.gif' class='poll scrollLoading' style='"+imgStyle+"'>":data;
+                      data += "<br>"+videoElm;
+                action = "<div style='display:flex;justify-content:space-between'>"+
+                "<label class='stats'><input style='"+(voteStatus==0?"display:none":"")+"' class='checkvote' value='"+id+"' type='checkbox'>票数:<span id='spVoteCount"+id+"' class='number'>"+votecount+"</span></label>"+
+                "</div>";
+                  trData = $("<tr data-idx='"+i+"' class='trData'><td colspan='3' class='data'>"+data+"</td></tr>");
+                  tblData.append(trData); 	           
+                  trAction = $("<tr data-idx='"+i+"' class='trAction'><td colspan='3' class='action'>"+action+"</td></tr>");
+                  tblData.append(trAction); 
+                  $("#divContent").append(tblData);
+                   }
+                   
+                   if(sponsor.length>0){
+                       divSponsor = $("<div class='sponsor'>"+sponsor+"</div>");
+                       $("#divContainer").append(divSponsor);
+                   }
+                   
+                   $("#spCandidateCount").html(jsonPollData.length);  
+                   $("#spViewCount").html(readCount); 
+                     $("#spVoteCount").html(votesum);
+                   $(".scrollLoading").scrollLoading({container: $("#divContainer")});
+                    $(".scrollLoading:lt(6)").each(function(){
+                          $(this).attr("src",$(this).attr("data-url"));
+                    })
+                    
+                    $("img.poll").on("click",function(){
+                        idx = $(this).attr("data-idx");
+                        id = jsonPollData[idx].ID;
+                        $("input.checkvote[value='"+id+"']").trigger("click");
+                    })
+                    
+                    $("input.checkvote").on("click",function(){
+                        if($("input.checkvote:checked").length>10){
+                            classUtil.alert("每次最多只能选择10个候选人");
+                            $(this).attr("checked",false);
+                        }
+                    })
+   
+   
+                 
+   
+               
+             //search 
+             $("#txtSearch").on("input",function(){
+                  keyWord = $(this).val().trim().toLowerCase();   
+                   if(keyWord.length==0){
+                        $("tr.trData,tr.trAction").show();	     	    	
+                        return;
+                   } 
+                   $("tr.trData,tr.trAction").hide();
+                   $("tr.trData,tr.trAction").each(function(){
+                        idx = $(this).attr("data-idx");
+                        if(jsonPollData[idx].fullName.toLowerCase().indexOf(keyWord)>=0 || jsonPollData[idx].uid.toLowerCase().indexOf(keyWord)>=0){
+                             $(this).show();
+                        };
+                   })	 
+                   
+             })
+               }   	 	
+           })
+           
+           $("#spVote").on("click",function(){
+                 if($(this).css("opacity")<0.5) return;
+                
+                 daycount = 0;
+                 timenow = Math.round((new Date()).getTime()/1000); 
+                 voteday1 = localStorage.getItem("voteday")?localStorage.getItem("voteday"):"";
+                 if(voteday1.length>5 && localStorage.getItem("daycount")>0 && localStorage.getItem("votetime")>0){
+                     
+                     voteday = localStorage.getItem("voteday");
+                     daycount = parseInt(localStorage.getItem("daycount"));
+                     daycount = voteDay==voteday?daycount:0;
+                     timevote = parseInt(localStorage.getItem("votetime"));
+                     timediff = timenow-timevote;
+                     timeleft = formatTime(config.interval-timediff);
+                     timeinterval = formatTime(config.interval,1);
+                     if(daycount>=config.daycount){
+                       classUtil.alert("抱歉，一天之内只能投"+config.daycount+"次票");
+                       return;
+                   } 	 	  
+                     if(timediff<config.interval){
+                       classUtil.alert("抱歉，"+timeinterval+"内只能投票一次。今天还可投"+(config.daycount-daycount)+"次，请"+timeleft+"后再来投票");
+                       return;
+                     }	
+                 }
+                 else{
+                     votestatus = 1;
+                     $.ajax({
+                         type:"post",
+                         url:"../util/postVoteFile.php",
+                         data:{"cmd":"get","token":token,"key":key,"path":pid,"filePath":userId+".js"},
+                         async:false,
+                         success:function(res){  
+                         if(res!=0){
+                             
+                         jsonData = JSON.parse(res);
+                         voteday = jsonData.voteday?jsonData.voteday:jsonData.voteDay;
+                         daycount = voteDay==voteday?jsonData.daycount:0;   	 	  		
+                         timevote = parseInt(jsonData.votetime);
+                         timediff = timenow-timevote;
+                       timeleft = formatTime(config.interval-timediff);
+                       timeinterval = formatTime(config.interval,1);
+                       localStorage.setItem("voteday",voteday);   	 
+                       localStorage.setItem("votetime",timevote);   	 	   
+                     localStorage.setItem("daycount",daycount);
+                       if(daycount>=config.daycount){
+                         classUtil.alert("抱歉，一天之内只能投"+config.daycount+"次票");
+                         votestatus = 0;
+                         return;
+                     } 	 	  
+                       if(timediff<config.interval){
+                         classUtil.alert("抱歉，"+timeinterval+"内只能投票一次。今天还可投"+(config.daycount-daycount)+"次，请"+timeleft+"后再来投票");
+                         votestatus = 0;
+                       }	
+                      }
+                     
+                         }
+                     });
+                     if(votestatus==0) return;
+                 }
+   
+                 len = $("input.checkvote:checked").length;   	 	 
+                 if(len==0 || len>config.maxcount){
+                     classUtil.alert("请选择最少1名，最多"+config.maxcount+"名候选人");
+                     return;
+                 }
+                 aID = [];
+                 $("input.checkvote:checked").each(function(){
+                     aID.push($(this).val());
+                 })
+                 ids = window.btoa(aID.join(","));
+                 $(this).css("opacity",0.3);
+                 timevote = Math.round((new Date()).getTime()/1000);   	 	     
+                 content = {"voteDay":voteDay,"votetime":timevote,"daycount":daycount+1};
+                
+                 htmlForm = "请输入你看到的数字:<br><span style='display:inline-block;margin:8px 0px;color:red;font-size:20px'>"+rnd1+"</span><br>"+
+                            "<input id='txtNum' style='width:60px;height:25px;padding:3px;'>";
+                 showForm(300,200,"投票验证",htmlForm);
+                 $("#divForm12345").css("top",50);
+                 $("#txtNum").on("input",function(){
+                     num = $(this).val().trim();
+                     if(num==rnd1){   	 	  		
+                     $("#spCloseForm12345").trigger("click");
+                 $.post("../util/postVote2018.php",{"token":token,"key":key,"cmd":"adduservote","code":num,"session":session,"uid":userId,"pid":pid,"ids":ids,"content":JSON.stringify(content)},function(res){
+                      $("#spVote").css("opacity",1.0);
+                       
+                      if(res==1){ 
+                       $("#spVote").css("opacity",0.3);
+                       totalvote = parseInt($("#spVoteCount").text());  
+                       $("#spVoteCount").html(totalvote+len);	 	  	 
+                       $("input.checkvote:checked").each(function(){
+                           vote = parseInt($("#spVoteCount"+$(this).val()).text());
+                          $("#spVoteCount"+$(this).val()).html(vote+1);
+                     })
+                     localStorage.setItem("voteday",voteDay);   	 	 
+                     localStorage.setItem("votetime",timevote);   	 	   
+                     localStorage.setItem("daycount",daycount+1);
+                     classUtil.alert("您的投票已成功，谢谢参与！");   	 	      
+                   }
+                 })
+                 
+                 
+                 }
+                 })
+                 
+           })
+           
+           $("#spViewRank,#spRank").on("click",function(){   
+                     w = Math.ceil(winWidth*0.9);
+                     h = 400;
+                 if(w>=800) {
+                     w=600;	 
+                     h=500;	 
+                 } 	  
+                     
+                      $.post("../util/postVote.php",{"token":token,"key":key,"cmd":"viewpoll","pid":pid,"bolPublic":1},function(data){
+                          jsonPoll = JSON.parse(data);
+                          tblPoll = $("<table style='width:100%;border-spacing:0px;font-size:1.2em;'></table>");
+                          tblPoll.append($("<tr class='pollheader'><td>排名</td><td>候选人姓名</td><td>得票数</td></tr>"));
+                          for(i=0;i<jsonPoll.length;i++){
+                              fullName = jsonPoll[i].fullName;
+                              userImage = jsonPoll[i].headImage.length>0?jsonPoll[i].headImage:jsonPoll[i].userImage;
+                              votecount = jsonPoll[i].votecount?jsonPoll[i].votecount:0;//<td width='65px' align='right'><img class='circle32' src='"+userImage+"'></td>
+                              tblPoll.append($("<tr class='poll'><td width='50px'><span class='ranknumber'>"+(i+1)+"</span></td><td style='text-align:left;padding-left:50px;'>"+fullName+"</td><td>"+votecount+"</td></tr>"));
+                          }
+                          divContainer = $("<div id='divFormContainer' style='display:block;overflow:auto;-webkit-overflow-scrolling: touch;height:"+(h-40)+"px;position:relative;'></div>");   	
+                 divContainer.append(tblPoll)
+                          showForm(w,h,"排行榜",divContainer.prop("outerHTML"));
+                          if($("span.ranknumber").length>=3){
+                            $("span.ranknumber").eq(0).css("background-color","#FFD700");
+                            $("span.ranknumber").eq(1).css("background-color","#C0C0C0");
+                            $("span.ranknumber").eq(2).css("background-color","#CD7F32");
+                          }
+                          scrollTop = $(document.body).scrollTop();
+                          $("#divForm12345").css({"border":"1px solid #0095D7","top":Math.ceil((winHeight-h)/2+scrollTop)});
+                          $(".popIframeDiv12345").css("height",$(document).height());
+                      //	$("#spCloseForm12345").attr("class","fa fa-close").css({"top":"10px","color":"white"});
+                          $("#spTitle12345").css({"background":"#0095D7","color":"white","height":"32px","padding-top":"8px","margin-top":"0px","margin-bottom": "0px"});
+                          $("tr.poll td").css({"border-bottom":"1px solid #ddd","height":"25px;"});
+                      })
+           })
+            $("#spRule").on("click",function(){
+                w = Math.ceil(winWidth*0.9);
+                if(w>=800) w=800;
+                h = Math.ceil(winHeight*0.8);
+              showForm(w,h,"投票规则","<div style='display:block;height:"+(h-60)+"px;overflow:auto;-webkit-overflow-scrolling:touch;text-align:left;padding:5px 15px;'>"+rule+"</div>");          
+              $("#divForm12345").find("img").css("max-width","100%");
+              $("#divForm12345").find("video").css("max-width","100%");
+             })
+        
+            wx.ready(function(){     	        
+                   /*  $.get("../util/setParam.php?p=wx&v=100",function(){
+                          
+                     })*/
+                     $("#spVote").css("opacity",1.0);
+                     session = 20181129;
+                    wxShare = function(shareTitle,shareContent,shareUrl,shareImage){
+                    wx.onMenuShareAppMessage({
+                       title: shareTitle,
+                       desc: shareContent,
+                       link:shareUrl,
+                       imgUrl: shareImage,
+                       trigger: function (res) {
+                          // alert('用户点击分享到朋友圈');
+                         
+                       },
+                       success: function (res) {
+                           
+                       },
+                       cancel: function (res) {
+                          // alert('已取消');
+                       },
+                       fail: function (res) {
+                          // alert('wx.onMenuShareTimeline:fail: '+JSON.stringify(res));
+                       }                        
+                    });	
+                     wx.onMenuShareTimeline({
+                       title: shareTitle,
+                       desc: shareContent,
+                       link:  shareUrl,
+                       imgUrl: shareImage,
+                       trigger: function (res) {
+                          // alert('用户点击分享到朋友圈');
+                       },
+                       success: function (res) {
+                           
+                       },
+                       cancel: function (res) {
+                          // alert('已取消');
+                       },
+                       fail: function (res) {
+                          // alert('wx.onMenuShareTimeline:fail: '+JSON.stringify(res));
+                       }                        
+                  });	
+                }
+                
+             fn_invite = function(shareTitle,shareContent,shareUrl,shareImage,id){   	
+                     var winWidth = $(window).width(), winHeight = $(document).height();	
+                $("body").append("<div class='popSubIframeDiv'></div>");
+                $(".popSubIframeDiv").css({
+                     opacity:0.7,
+                         width : winWidth,
+                         height : winHeight,
+                         background : "#000",
+                         position : "absolute",
+                         left : "0",
+                         top : "0",
+                         "z-index":"502"
+                });	   
+              scrollTop = $(document.body).scrollTop();            
+                   shareImage1 = $("<img id='shareImage' src='images/shareImage.png' style='position:absolute;z-index:503;left:0px;top:"+scrollTop+"px;width:"+winWidth+"'>");
+                   $(document.body).append(shareImage1);
+                   $(".popSubIframeDiv,#shareImage").on("click",function(){   			    		
+                      $(".popSubIframeDiv,#shareImage").remove();
+                      wxShare(shareTitle,shareContent,shareUrl,shareImage);
+                   })
+           } 
+            
+           
+             
+             //search 
+             $("#spShare").on("click",function(){
+                 fn_invite(shareTitle,shareContent,shareUrl,shareImage);
+             })
+             
+              wxShare(shareTitle,shareContent,shareUrl,shareImage);
+             
+             })
+             
+       /*      $.post("../util/postVote.php",{"token":token,"key":key,"cmd":"addreadcount","pid":pid},function(data){
+   
+                })*/
+        
+      });
+      
+     
+   </script>
+   
+   </body></html>
+   
+    
+   
