@@ -18,7 +18,7 @@ const uri = "http://www.51lecture.com/util/postVote.php"; //  投票、排名接
 //const agent = "Mozilla/5.0 (Linux; Android 8.1; INE-TL00 Build/HUAWEIINE-TL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/6.2 TBS/044307 Mobile Safari/537.36 MMWEBID/4422 MicroMessenger/6.7.3.1360(0x2607033A) NetType/WIFI Language/zh_CN Process/tools"
 const agent ="Mozilla/5.0 (Linux; Android 8.1; INE-TL00 Build/HUAWEIINE-TL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/6.2 TBS/044403 Mobile Safari/537.36 MMWEBID/4422 MicroMessenger/6.7.3.1360(0x2607033A) NetType/WIFI Language/zh_CN Process/tools"
 let count = 0
-let cookie = 'PHPSESSID=qvaa22vug4ovgo8e0m3bq5ai11' // 需要更新
+let cookie = 'PHPSESSID=enab8fr8egf61qt4r9q6t6ir93' // 需要更新
 //let cookie = ''
 let token = ''
 let key = ''
@@ -40,7 +40,7 @@ function parseHtml(result) {
         // console.info('rnd1:' + rnd1+ ',voteDay:'+ voteDay)
         check()
     } else {
-        console.log('服务器出错')
+        console.log('cookie过期请更换cookie！')
     }
     
 }
