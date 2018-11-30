@@ -98,7 +98,7 @@ function first() { // 登录获取token
          return
     })
 }
-function second(res) { // 投票
+function second() { // 投票
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         "Cookie": cookie,
@@ -106,9 +106,9 @@ function second(res) { // 投票
         "X-Requested-With":"XMLHttpRequest"
     } 
     let content = {
-        voteDay: res.voteDay,
+        voteDay:  new Date().toLocaleDateString(),
         votetime: Math.round((new Date()).getTime()/1000),
-        daycount: res.daycount + 1
+        daycount: 1
     }
     const options = {
         form: {
@@ -126,7 +126,6 @@ function second(res) { // 投票
         headers: headers   
     }
     request.post(url,options,(error, response, body) => {
-        // console.log(body)
         if(body == '1') {
             // check(headers)
             console.log('第'+ count + '次投票成功！')
@@ -152,9 +151,10 @@ function check() {
         }      
     }
     request.post(checkUrl,options,(error, response, body) => {
-        if(body){
-            second(body)
-        }
+        // console.log(response)
+        // if(body){
+            second()
+        //}
         // console.log(body)
     })  
 
@@ -190,7 +190,7 @@ function third() { // 获取排名信息
 }
 
 function start() {
-    // realLogin()
+     // realLogin()
     schedule.scheduleJob(rule, function(){
         console.log('现在时间：',new Date())
         count++
