@@ -100,15 +100,16 @@
    </div>
    <script>  
       var group = "ljzfin";
-      var user = "5859c49b";
-      var userId = "f26ddbec08162930f55de5cf67f8d7b6";
+      var user = "60d3c38b";
+      var userId = "f4e5ca43d0c33aa33ea1b5e297df8e9a";
       userId = userId.substr(0,6);
-      var token = "23023967a1101df20fc8280ad5ddeef4";
-      var key = "1543473856";
-      var rnd1 = "3980";
-      var voteDay = "2018-11-29";
-      var visittime = 1543473856000;
+      var token = "483040b06b8336923ee3a3a8f1fa410f";
+      var key = "1543539237";
+      var rnd1 = "7569";
+      var voteDay = "2018-11-30";
+      var visittime = 1543539237000;
       var pid = "19";
+      var votesession = "236f119f58f5fd102c5a2ca609fdcbd8";
       var videoActive = null;
       var wxShare = null;
       var posterImage = "";
@@ -134,9 +135,9 @@
       wx.config({
                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                    appId: 'wx65398f3325d7afc8',
-                   timestamp: 1543473856,
-                   nonceStr: 'u79MZuxzw8TReO5e',
-                   signature: 'f2399e67650abb8a7174e0ec6aa6114430b8968f',               
+                   timestamp: 1543539237,
+                   nonceStr: 'DhJtr9GaRFi5TcBS',
+                   signature: '1e8a6e31453eb55884aaa19453ee0497e4e81c6a',               
                          jsApiList: ['onMenuShareAppMessage',
                     'onMenuShareTimeline' ] // 必填，需要使用的JS接口列表
      });
@@ -566,7 +567,7 @@
                           
                      })*/
                      $("#spVote").css("opacity",1.0);
-                     session = 20181129;
+                     session = votesession;
                     wxShare = function(shareTitle,shareContent,shareUrl,shareImage){
                     wx.onMenuShareAppMessage({
                        title: shareTitle,

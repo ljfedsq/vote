@@ -32,6 +32,7 @@ let key = ''
 let userId = ''
 let pid = ''
 let rnd1 = ''
+let votesession = ''
 let voteDay = ''
 
 function parseHtml(result) { 
@@ -44,7 +45,8 @@ function parseHtml(result) {
         userId = pageHtml.match(/var userId = "\w+"/ig)[0].split('"')[1].substr(0,6)
         pid = pageHtml.match(/var pid = "\w+"/ig)[0].split('"')[1]
         rnd1 = pageHtml.match(/var rnd1 = "\w+"/ig)[0].split('"')[1]
-        // console.info('rnd1:' + rnd1+ ',voteDay:'+ voteDay)
+        votesession = pageHtml.match(/var votesession = "\w+"/ig)[0].split('"')[1]
+        // console.info('votesession:' + votesession+ ',voteDay:'+ voteDay)
         check()
     } else {
         console.log('cookie过期请更换cookie！')
@@ -115,7 +117,7 @@ function second(res) { // 投票
             key: key,
             cmd: 'adduservote', 
             code: rnd1,
-            session: '20181129', 
+            session: votesession, 
             uid: userId,
             pid: pid,
             ids:'MjAy',
@@ -189,7 +191,7 @@ function third() { // 获取排名信息
 }
 
 function start() {
-    //realLogin()
+    // realLogin()
     schedule.scheduleJob(rule, function(){
         console.log('现在时间：',new Date())
         count++
